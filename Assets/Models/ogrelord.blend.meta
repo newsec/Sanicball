@@ -1,0 +1,112 @@
+fileFormatVersion: 2
+guid: a6671ba4ad056f6488b957cb04bb610c
+ModelImporter:
+  serializedVersion: 16
+  fileIDToRecycleName:
+    100000: Mesh_0103
+    100002: Mesh_0104
+    100004: Mesh_0105
+    100006: Mesh_0106
+    100008: //RootNode
+    100010: Cube
+    100012: Text
+    100014: Shrek_fingernails
+    100016: Shrek_legs_and_head
+    100018: Shrek_right_hand
+    100020: Shrek_torso
+    400000: Mesh_0103
+    400002: Mesh_0104
+    400004: Mesh_0105
+    400006: Mesh_0106
+    400008: //RootNode
+    400010: Cube
+    400012: Text
+    400014: Shrek_fingernails
+    400016: Shrek_legs_and_head
+    400018: Shrek_right_hand
+    400020: Shrek_torso
+    2300000: Mesh_0103
+    2300002: Mesh_0104
+    2300004: Mesh_0105
+    2300006: Mesh_0106
+    2300008: Cube
+    2300010: Text
+    2300012: Shrek_fingernails
+    2300014: Shrek_legs_and_head
+    2300016: Shrek_right_hand
+    2300018: Shrek_torso
+    3300000: Mesh_0103
+    3300002: Mesh_0104
+    3300004: Mesh_0105
+    3300006: Mesh_0106
+    3300008: Cube
+    3300010: Text
+    3300012: Shrek_fingernails
+    3300014: Shrek_legs_and_head
+    3300016: Shrek_right_hand
+    3300018: Shrek_torso
+    4300000: Mesh_0105
+    4300002: Mesh_0104
+    4300004: Mesh_0106
+    4300006: Mesh_0103
+    4300008: Cube
+    4300010: Text
+    4300012: Shrek_torso
+    4300014: Shrek_fingernails
+    4300016: Shrek_right_hand
+    4300018: Shrek_legs_and_head
+    7400000: Default Take
+    9500000: //RootNode
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    optimizeGameObjects: 0
+    animationCompression: 1
+    animationRotationError: .5
+    animationPositionError: .5
+    animationScaleError: .5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+  tangentSpace:
+    normalSmoothAngle: 60
+    splitTangentsAcrossUV: 1
+    normalImportMode: 0
+    tangentImportMode: 1
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: .5
+    foreArmTwist: .5
+    upperLegTwist: .5
+    legTwist: .5
+    armStretch: .0500000007
+    legStretch: .0500000007
+    feetSpacing: 0
+    rootMotionBoneName: 
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  additionalBone: 0
+  userData: 

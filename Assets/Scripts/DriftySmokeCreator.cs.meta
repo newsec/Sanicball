@@ -1,0 +1,9 @@
+fileFormatVersion: 2
+guid: ec7179cab1ef63d409df05022c2373db
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences:
+  - smokeObject: {fileID: 100000, guid: 83f9c6324dcbb7042a24b3478b9efcbe, type: 2}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 

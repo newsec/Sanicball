@@ -1,0 +1,13 @@
+fileFormatVersion: 2
+guid: f21c276ad1e2ef544a4599afc3a74052
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences:
+  - skin: {fileID: 11400000, guid: cfb4b63cb305ffd4eb65559ce7283d10, type: 2}
+  - raceController: {instanceID: 0}
+  - playerBallPrefab: {instanceID: 0}
+  - remoteBallPrefab: {instanceID: 0}
+  - aiBallPrefab: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
