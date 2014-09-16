@@ -1,0 +1,24 @@
+- racing your record as a ghost
+- custom ball textures
+- booster pads
+- powerups / arena mode
+- once all players are finished, auto return to lobby
+- spin dash
+- player activated boost
+- make ingame menu with no name change
+gamemodes:
+- tag
+- freeroam
+gui:
+- list of online players with chat (p hard to do)
+characters:
+- jet da hawk
+- cream
+- the cocodile
+stages:
+- marble zone
+- final rush
+- city escape
+- chemical plant
+- lost worlds (from sanic adventure)
+- huge plinko board

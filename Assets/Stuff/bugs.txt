@@ -1,0 +1,11 @@
+- sometimes character menu bugs out (only one report)
+- wrong port picked up by master server
+- joining game in progress sometimes doesnt spawn anything
+- sometimes, half the players get set to spectators with their balls still spawning
+- player ball sometimes wont spawn when starting race
+- cam is spinning around (source: dualshock controllers)
+
+- ball respawn points are clientside
+
+MAJOR LAGS:
+sign going crazy
