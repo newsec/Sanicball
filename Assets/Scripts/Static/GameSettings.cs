@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
+// This was changed to a file so that it wouldn't conflict with normal Sanicball.
 public static class GameSettings {
 
 	public static Keybinds keybinds = new Keybinds();
@@ -17,30 +18,45 @@ public static class GameSettings {
 	public static float volume = 1;
 	public static bool music = true;
 	public static bool sanicSpeedSong = true;
+
+    public static XmlConfiguration settings;
 	
 	public static void Init () {
-		Load();
+        settings = new XmlConfiguration("Settings", Application.persistentDataPath);
+        Debug.Log(Application.persistentDataPath);
+        settings.AddSetting("player-name", user.playerName);
+        settings.AddSetting("token", user.token);
+        settings.AddSetting("enable-trails", enableTrails);
+        settings.AddSetting("fullscreen", fullscreen);
+        settings.AddSetting("aa-level", aa);
+        settings.AddSetting("vsync", vsync);
+        settings.AddSetting("shadows", shadows);
+        settings.AddSetting("sensitivity-mouse", sensitivityMouse);
+        settings.AddSetting("sensitivity-keyboard", sensitivityKeyboard);
+        settings.AddSetting("volume", volume);
+        settings.AddSetting("music", music);
+        settings.AddSetting("sanic-speed-song", sanicSpeedSong);
+        settings.FinishedAddingSettings();
 		Apply(false);
 	}
 
 	public static void Load() {
 		keybinds.LoadFromPrefs();
-		user.playerName = PlayerPrefs.GetString("Settings_PlayerName",user.playerName);
+		user.playerName = settings.GetSetting<string>("player-name");
 		if (user.playerName.Length > 32) {
 			user.playerName.Remove(32);
 		}
-		user.token = PlayerPrefs.GetString("Settings_Token",user.token);
-		//resolution = PlayerPrefs.GetFloat("Settings_Resolution",resolution);
-		enableTrails = PlayerPrefsX.GetBool("Settings_EnableTrails",enableTrails);
-		fullscreen = PlayerPrefsX.GetBool("Settings_Fullscreen",fullscreen);
-		aa = PlayerPrefs.GetInt("Settings_AA",aa);
-		vsync = PlayerPrefsX.GetBool("Settings_Vsync",vsync);
-		shadows = PlayerPrefsX.GetBool("Settings_Shadows",shadows);
-		sensitivityMouse = PlayerPrefs.GetFloat("Settings_SensitivityMouse",sensitivityMouse);
-		sensitivityKeyboard = PlayerPrefs.GetFloat("Settings_SensitivityKeyboard",sensitivityKeyboard);
-		volume = PlayerPrefs.GetFloat("Settings_Volume",volume);
-		music = PlayerPrefsX.GetBool("Settings_Music",music);
-		sanicSpeedSong = PlayerPrefsX.GetBool("Settings_SanicSpeedSong",sanicSpeedSong);
+        user.token = settings.GetSetting<string>("token");
+        enableTrails = settings.GetSetting<bool>("enable-trails");
+        fullscreen = settings.GetSetting<bool>("fullscreen");
+        aa = settings.GetSetting<int>("aa-level");
+        vsync = settings.GetSetting<bool>("vsync");
+        shadows = settings.GetSetting<bool>("shadows");
+        sensitivityMouse = settings.GetSetting<float>("sensitivity-mouse");
+        sensitivityKeyboard = settings.GetSetting<float>("sensitivity-keyboard");
+        volume = settings.GetSetting<float>("volume");
+        music = settings.GetSetting<bool>("music");
+        sanicSpeedSong = settings.GetSetting<bool>("sanic-speed-song");
 
 		//Get resolution
 		for (int i=0;i<Screen.resolutions.Length;i++) {
@@ -54,18 +70,17 @@ public static class GameSettings {
 
 	public static void Save() {
 		keybinds.SaveToPrefs();
-		//PlayerPrefs.SetFloat("Settings_Resolution",resolution); Unity gets the latest resolution automagically
-		PlayerPrefsX.SetBool("Settings_EnableTrails",enableTrails);
-		PlayerPrefsX.SetBool("Settings_Fullscreen",fullscreen);
-		PlayerPrefs.SetInt("Settings_AA",aa);
-		PlayerPrefsX.SetBool("Settings_Vsync",vsync);
-		PlayerPrefsX.SetBool("Settings_Shadows",shadows);
-		PlayerPrefs.SetFloat("Settings_SensitivityMouse",sensitivityMouse);
-		PlayerPrefs.SetFloat("Settings_SensitivityKeyboard",sensitivityKeyboard);
-		PlayerPrefs.SetFloat("Settings_Volume",volume);
-		PlayerPrefsX.SetBool("Settings_Music",music);
-		PlayerPrefsX.SetBool("Settings_SanicSpeedSong",sanicSpeedSong);
-		PlayerPrefs.Save();
+        settings.SetValue("enable-trails", enableTrails);
+        settings.SetValue("fullscreen", fullscreen);
+        settings.SetValue("aa-level", aa);
+        settings.SetValue("vsync", vsync);
+        settings.SetValue("shadows", shadows);
+        settings.SetValue("sensitivity-mouse", sensitivityMouse);
+        settings.SetValue("sensitivity-keyboard", sensitivityKeyboard);
+        settings.SetValue("volume", volume);
+        settings.SetValue("music", music);
+        settings.SetValue("sanic-speed-song", sanicSpeedSong);
+        settings.Save();
 	}
 	
 	public static void Apply(bool changeWindow) {
