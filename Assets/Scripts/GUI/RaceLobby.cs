@@ -535,6 +535,7 @@ public class RaceLobby : MonoBehaviour {
 						raceSetup.settings.stage = s.id;
 						raceSetup.LoadRace();
 					};
+                    GUILayout.Label("Made by " + s.author);
 					if (stageRecords[s.id] != -1) {
 						GUILayout.Label("Lap record: "+Timing.GetTimeString(stageRecords[s.id]));
 					} else {

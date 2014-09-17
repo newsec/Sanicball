@@ -69,6 +69,7 @@ public class Racer : MonoBehaviour {
 		micon.renderer.material = mapIconMaterial;
 		micon.objectToFollow = this.gameObject;
 		micon.mapCamera = mapCamera;
+        base.rigidbody.interpolation = RigidbodyInterpolation.Interpolate;
 	}
 
 	void OnTriggerEnter(Collider other) {

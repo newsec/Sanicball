@@ -23,7 +23,6 @@ public static class GameSettings {
 	
 	public static void Init () {
         settings = new XmlConfiguration("Settings", Application.persistentDataPath);
-        Debug.Log(Application.persistentDataPath);
         settings.AddSetting("player-name", user.playerName);
         settings.AddSetting("token", user.token);
         settings.AddSetting("enable-trails", enableTrails);

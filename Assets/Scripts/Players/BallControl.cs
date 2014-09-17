@@ -20,7 +20,7 @@ public class BallControl : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-
+        base.rigidbody.interpolation = RigidbodyInterpolation.Interpolate;
 	}
 	
 	// Update is called once per frame

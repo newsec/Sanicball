@@ -8,6 +8,7 @@ public class Stage {
 	public int id;
 	public string sceneName;
 	public Texture2D picture;
+    public string author;
 }
 
 [System.Serializable]
