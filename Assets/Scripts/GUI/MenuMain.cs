@@ -16,7 +16,6 @@ public class MenuMain : MonoBehaviour {
 	KeyCode[] validKeyCodes;
 
 	void Start() {
-		GameSettings.Init ();
 		PlayerTypeHandler.Init();
 		options.UpdateVarsGeneral();
 		options.UpdateVarsProfile();
