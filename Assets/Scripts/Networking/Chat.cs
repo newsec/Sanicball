@@ -69,23 +69,29 @@ public class Chat : MonoBehaviour {
 
 	
 	[RPC]
-	public void SendChatMessage(string name, string message, Vector3 color) {
-		Color realColor = new Color(color.x,color.y,color.z);
-		AddMessage(name, message, realColor);
+	public void SendChatMessage(NetworkPlayer sender, string message) {
+        ServerPlayer player = GetComponent<Client>().FindServerPlayer(sender);
+        string name = player.name;
+        if(player.spectating)
+        {
+            name = "[Spectating] " + name;
+        }
+        if (GetComponent<Client>().IsHost(sender))
+        {
+            name = "[Host] " + name;
+        }
+        AddMessage(name, message, PlayerTypeHandler.GetPlayerColor(player.type));
 	}
+
+    [RPC]
+    public void GetServerMessage(string text, Vector3 color)
+    {
+        AddMessage("[System]", text, new Color(color.x, color.y, color.z));
+    }
 
 	void Send() {
 		if (message.Trim() != "") {
-			string nameToShow = GameSettings.user.playerName;
-			ServerPlayer me = GetComponent<Client>().FindServerPlayer(Network.player);
-			if (me.spectating) {
-				nameToShow = "[Spectating] " + nameToShow;
-			}
-			if (GetComponent<Client>().IsHost(Network.player)) {
-				nameToShow = "[Host] " + nameToShow;
-			}
-			Color color = PlayerTypeHandler.GetPlayerColor(me.type);
-			networkView.RPC("SendChatMessage",RPCMode.All,nameToShow,message,new Vector3(color.r,color.g,color.b));
+			networkView.RPC("SendChatMessage",RPCMode.All,Network.player,message);
 			if (message.ToLower().Contains("shrek")) {
 				EnableShreking();
 			}
@@ -96,7 +102,7 @@ public class Chat : MonoBehaviour {
 		Screen.lockCursor = cursorWasLocked;
 	}
 
-	void AddMessage(string name, string msg, Color c) {
+	public void AddMessage(string name, string msg, Color c) {
 		chatlog.Add(new ChatMessage(name,msg,c));
 		autoHide = 5;
 		scroll.y = Mathf.Infinity;

@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using System.Linq;
 
 public class Client : MonoBehaviour {
 
@@ -250,6 +251,29 @@ public class Client : MonoBehaviour {
 	
 	[RPC]
 	void AddPlayerToList(NetworkPlayer player, string name, int type) {
+        int i = 0;
+        while(true)
+        {
+            if(i == 0)
+            {
+                if (!players.Where(plr => plr.name.Equals(name)).Any())
+                {
+                    break;
+                }
+            }
+            else
+            {
+                if (!players.Where(plr => plr.name.Equals(name + " (" + i + ")")).Any())
+                {
+                    break;
+                }
+            }
+            i++;
+        }
+        if(i != 0)
+        {
+            name += " (" + i + ")";
+        }
 		players.Add(new ServerPlayer(player,name,(PlayerType)type));
 	}
 	

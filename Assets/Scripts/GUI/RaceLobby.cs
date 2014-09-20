@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using System.Linq;
 
 public class RaceLobby : MonoBehaviour {
 	public GUISkin skin;
@@ -17,8 +18,8 @@ public class RaceLobby : MonoBehaviour {
 	float forceStartTimer = 0;
 
 	int character = 0;
-	int totalCharacters = 9;
-	int superSanicID = 11;
+	int totalCharacters;
+	int superSanicID = -1;
 
 	Vector2 playerListScroll;
 	Vector2 raceSettingsScroll;
@@ -61,7 +62,14 @@ public class RaceLobby : MonoBehaviour {
 		raceSetup.settings = RaceSettings.ParseFromString(settingsString);
 		//Set some things from the race settings
 		totalCharacters = raceSetup.characters.Length;
-		tempSettings = new RaceSettings(raceSetup.settings);
+        for (int i = 0; i < totalCharacters; i++ )
+        {
+            if(raceSetup.characters[i].name.ToLower().Equals("super sanic"))
+            {
+                superSanicID = i;
+            }
+        }
+        tempSettings = new RaceSettings(raceSetup.settings);
 		tempLapsF = tempSettings.laps;
 		tempAIBallsF = tempSettings.aiBallCount;
 		tempAIStupidnessF = tempSettings.aiStupidness;
@@ -548,7 +556,11 @@ public class RaceLobby : MonoBehaviour {
 				GUILayout.EndScrollView();
 				GUILayout.EndArea();
 			} else {
-
+                if (!ready)
+                {
+                    ready = true;
+                    client.networkView.RPC("SetReady", RPCMode.All, Network.player, true);
+                }
 				GUI.Label(new Rect(0,100,Screen.width,100),"Host is selecting stage...",titleStyle);
 			}
 

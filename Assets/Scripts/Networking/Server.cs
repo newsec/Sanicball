@@ -88,20 +88,18 @@ public class Server : MonoBehaviour {
 	}
 
 	public void SendPublicMsg(string text)  {
-		networkView.RPC("SendChatMessage",RPCMode.All,"[System]",text,new Vector3(1,1,0));
+		networkView.RPC("GetServerMessage",RPCMode.All,text, new Vector3(1,1,0));
 	}
 
 	public void SendServerMsg(string text) {
 		Vector3 col = new Vector3(1,0.2f,0.2f);
 		if (Network.isServer) {
-			GetComponent<Chat>().SendChatMessage("[System]",text,col);
-		} else {
-			networkView.RPC("SendChatMessage",RPCMode.Server,"[System]",text,col);
+			GetComponent<Chat>().AddMessage("[System]",text,new Color(1.0f, 0.2f, 0.2f));
 		}
 	}
 
 	public void SendPrivateMsg(string text, NetworkPlayer target) {
-		networkView.RPC("SendChatMessage",target,"[System]",text,new Vector3(0.8f,0.8f,0));
+        networkView.RPC("GetServerMessage", target, text, new Vector3(0.8f, 0.8f, 0));
 	}
 
 	[RPC]
