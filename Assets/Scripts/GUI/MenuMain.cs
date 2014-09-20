@@ -16,6 +16,7 @@ public class MenuMain : MonoBehaviour {
 	KeyCode[] validKeyCodes;
 
 	void Start() {
+        GameSettings.Init();
 		PlayerTypeHandler.Init();
 		options.UpdateVarsGeneral();
 		options.UpdateVarsProfile();
@@ -56,7 +57,7 @@ public class MenuMain : MonoBehaviour {
 		GUILayout.BeginArea(pos);
 		//Game version and slogan
 		GUIStyle version = new GUIStyle(GUI.skin.label);
-		version.fontSize = 60;
+		version.fontSize = 52;
 		version.fontStyle = FontStyle.Bold;
 		GUILayout.Label(GameVersion.AsString,version);
 		GUILayout.Label(GameVersion.Slogan);
