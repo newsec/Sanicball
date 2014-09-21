@@ -3,6 +3,12 @@ Sanicball
 
 Official-ish continuation of Sanicball
 
+Where are all the models?!?! 😣
+=========
+
+Install Blender and reimport all assets.
+
+
 Where is the MonoDevelop/VS Solution?!?! 😣
 =========
 
