@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 using System.Text;
+using System.Linq;
 
 [System.Serializable]
 public class Stage {
@@ -19,7 +20,8 @@ public class Character {
 	public Material minimapIcon;
 	public Material trail;
 	public float ballSize = 1;
-	public Mesh alternativeMesh = null;
+    public string[] attributes;
+    public Mesh alternativeMesh = null;
 }
 
 public class RaceSetup : MonoBehaviour {
@@ -29,9 +31,6 @@ public class RaceSetup : MonoBehaviour {
 
 	//Things changed in inspector for now
 	public RaceController raceController;
-	public Character[] characters;
-	public Stage[] stages;
-
 	
 	public Racer playerBallPrefab;
 	public Racer remoteBallPrefab;
@@ -114,7 +113,7 @@ public class RaceSetup : MonoBehaviour {
 		nw.RPC("SetAllReady",RPCMode.All,false);
 		nw.RPC("SetReadyOnLevelLoad",RPCMode.All);
 		//settings.aiBallCount = Mathf.Floor(settings.aiBallCount);
-		Application.LoadLevel(stages[settings.stage].sceneName);
+		Application.LoadLevel(Global.stages[settings.stage].sceneName);
 		startOnLevelLoad = true;
 	}
 
@@ -150,12 +149,12 @@ public class RaceSetup : MonoBehaviour {
 		foreach (ServerPlayer sp in client.GetPlayerList()) {
 			if (sp.spectating) continue; //Don't spawn spectators
 
-			Character c = characters[sp.character]; //Get character for player
+			Character c = Global.characters[sp.character]; //Get character for player
 			Object o;
 			if (sp.player == Network.player) {
 				o = playerBallPrefab;
 				//Is mlg mode?
-				if (c.name == "Super Sanic") {
+				if (c.attributes.Contains("sponsored by mlg")) {
 					Instantiate(mlgModeObject);
 				}
 			} else {
@@ -169,14 +168,10 @@ public class RaceSetup : MonoBehaviour {
 			r.renderer.material = c.material;
 			r.mapIconMaterial = c.minimapIcon;
 			r.GetComponent<TrailRenderer>().material = c.trail;
-			if (c.alternativeMesh != null) {
-				r.GetComponent<MeshFilter>().mesh = c.alternativeMesh;
-				/*Destroy(r.collider); set collision mesh too
-				MeshCollider mc = r.gameObject.AddComponent<MeshCollider>();
-				mc.sharedMesh = c.alternativeMesh;
-				mc.convex = true;
-				mc.smoothSphereCollisions = true;*/
-			}
+            if (c.alternativeMesh != null)
+            {
+                r.GetComponent<MeshFilter>().mesh = c.alternativeMesh;
+            }
 			BallControl bc = r.GetComponent<BallControl>();
 			if (bc != null) {
 				bc.stats = c.stats;
@@ -212,9 +207,9 @@ public class RaceSetup : MonoBehaviour {
 			dir += (Vector3.back*1.4f)*row;
 			Character c;
 			if (aiPos < settings.aiCharacters.Count) {
-				c = characters[(int)settings.aiCharacters[aiPos]]; //Get character for player
+				c = Global.characters[(int)settings.aiCharacters[aiPos]]; //Get character for player
 			} else {
-				c = characters[1]; //Default to knackles
+                c = Global.characters[1]; //Default to knackles
 			}
 			Object o;
 			if (Network.isServer)
@@ -229,9 +224,6 @@ public class RaceSetup : MonoBehaviour {
 			r.renderer.material = c.material;
 			r.mapIconMaterial = c.minimapIcon;
 			r.GetComponent<TrailRenderer>().material = c.trail;
-			if (c.alternativeMesh != null) {
-				r.GetComponent<MeshFilter>().mesh = c.alternativeMesh;
-			}
 			BallControl bc = r.GetComponent<BallControl>();
 			if (bc != null) {
 				bc.stats = c.stats;

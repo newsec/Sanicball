@@ -4,8 +4,6 @@ using System.Collections;
 [RequireComponent(typeof(AudioSource))]
 public class MusicPlayer : MonoBehaviour {
 	public GUISkin skin;
-	
-	public Song[] playlist;
 	public AudioClip mlgSong;
 	public AudioSource fastSource;
 
@@ -25,7 +23,7 @@ public class MusicPlayer : MonoBehaviour {
 	void Start() {
 		slidePosition = slidePositionMax;
 		ShuffleSongs();
-		audio.clip = playlist[0].clip;
+		audio.clip = Global.playlist[0].clip;
 		currentSongID = 0;
 		isPlaying = audio.isPlaying;
 		if (!GameSettings.music) {
@@ -35,12 +33,13 @@ public class MusicPlayer : MonoBehaviour {
 	void Update() {
 		//If it's not playing but supposed to play, change song
 		if ((!audio.isPlaying || GameSettings.keybinds.GetKeyDown("nextsong")) && isPlaying) {
-			if (currentSongID<playlist.Length-1) {
+            if (currentSongID < Global.playlist.Length - 1)
+            {
 				currentSongID++;
 			} else {
 				currentSongID = 0;
 			}
-			audio.clip = playlist[currentSongID].clip;
+            audio.clip = Global.playlist[currentSongID].clip;
 			slidePosition = slidePositionMax;
 			Play ();
 		}
@@ -65,7 +64,7 @@ public class MusicPlayer : MonoBehaviour {
 	}
 
 	public void Play() {
-		Play (playlist[currentSongID].name);
+        Play(Global.playlist[currentSongID].name);
 	}
 
 	public void Play(string credits) {
@@ -107,11 +106,12 @@ public class MusicPlayer : MonoBehaviour {
 
 	void ShuffleSongs() {
 		//Shuffle playlist using Fisher-Yates algorithm
-		for (int i = playlist.Length;i > 1;i--) {
+        for (int i = Global.playlist.Length; i > 1; i--)
+        {
 			int j = Random.Range(0,i);
-			Song tmp = playlist[j];
-			playlist[j] = playlist[i - 1];
-			playlist[i - 1] = tmp;
+            Song tmp = Global.playlist[j];
+            Global.playlist[j] = Global.playlist[i - 1];
+            Global.playlist[i - 1] = tmp;
 		}
 	}
 

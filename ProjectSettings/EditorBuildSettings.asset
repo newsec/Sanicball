@@ -12,12 +12,12 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Lobby.unity
   - enabled: 1
-    path: Assets/Scenes/Track_GreenHillZone.unity
+    path: Assets/Scenes/Tracks/BK-TN/Track_GreenHillZone.unity
   - enabled: 1
-    path: Assets/Scenes/Track_FlameCore.unity
+    path: Assets/Scenes/Tracks/BK-TN/Track_FlameCore.unity
   - enabled: 1
-    path: Assets/Scenes/Track_SnowyMountain.unity
+    path: Assets/Scenes/Tracks/BK-TN/Track_SnowyMountain.unity
   - enabled: 1
-    path: Assets/Scenes/Track_RainbowRoad.unity
+    path: Assets/Scenes/Tracks/BK-TN/Track_RainbowRoad.unity
   - enabled: 1
-    path: Assets/Scenes/Track_Desert.unity
+    path: Assets/Scenes/Tracks/BK-TN/Track_Desert.unity

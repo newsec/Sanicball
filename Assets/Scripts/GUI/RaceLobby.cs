@@ -19,7 +19,6 @@ public class RaceLobby : MonoBehaviour {
 
 	int character = 0;
 	int totalCharacters;
-	int superSanicID = -1;
 
 	Vector2 playerListScroll;
 	Vector2 raceSettingsScroll;
@@ -61,14 +60,7 @@ public class RaceLobby : MonoBehaviour {
 		string settingsString = PlayerPrefs.GetString("RaceSettings",raceSetup.settings.ToString());
 		raceSetup.settings = RaceSettings.ParseFromString(settingsString);
 		//Set some things from the race settings
-		totalCharacters = raceSetup.characters.Length;
-        for (int i = 0; i < totalCharacters; i++ )
-        {
-            if(raceSetup.characters[i].name.ToLower().Equals("super sanic"))
-            {
-                superSanicID = i;
-            }
-        }
+        totalCharacters = Global.characters.Length;
         tempSettings = new RaceSettings(raceSetup.settings);
 		tempLapsF = tempSettings.laps;
 		tempAIBallsF = tempSettings.aiBallCount;
@@ -78,9 +70,9 @@ public class RaceLobby : MonoBehaviour {
 
 		character = client.FindServerPlayer(Network.player).character;
 		//Set stage records
-		stageRecords = new float[raceSetup.stages.Length];
+		stageRecords = new float[Global.stages.Length];
 		for (int i=0;i<stageRecords.Length;i++) {
-			Stage s = raceSetup.stages[i];
+            Stage s = Global.stages[i];
 			stageRecords[i] = PlayerPrefs.GetFloat(s.sceneName+"_lap",-1);
 		}
 
@@ -99,7 +91,7 @@ public class RaceLobby : MonoBehaviour {
 			forceStartTimer = Mathf.Max(0,forceStartTimer - Time.deltaTime);
 		}
 
-		if (character == superSanicID && !raceSetup.settings.allowSuperSanic) {
+		if (Global.characters[character].attributes.Contains("2fast") && !raceSetup.settings.allowSuperSanic) {
 			character = 0;
 			client.networkView.RPC("SetCharacter",RPCMode.All,Network.player,0);
 		}
@@ -140,11 +132,11 @@ public class RaceLobby : MonoBehaviour {
 	}
 
 	string GetCharacterName(int character) {
-		return raceSetup.characters[character].name.ToUpper();
+        return Global.characters[character].name.ToUpper();
 	}
 
 	public Racer SpawnLobbyBall(ServerPlayer sp, bool isLocal) {
-		Character c = FindObjectOfType<RaceSetup>().characters[sp.character]; //Get character for player
+        Character c = Global.characters[sp.character]; //Get character for player
 		Object o;
 		if (sp.player == Network.player)
 			o = ballPlayerLobbyPrefab;
@@ -158,9 +150,10 @@ public class RaceLobby : MonoBehaviour {
 		r.mapIconMaterial = c.minimapIcon;
 		r.GetComponent<TrailRenderer>().material = c.trail;
 		BallControl bc = r.GetComponent<BallControl>();
-		if (c.alternativeMesh != null) {
-			r.GetComponent<MeshFilter>().mesh = c.alternativeMesh;
-		}
+        if (c.alternativeMesh != null) 
+        {
+            r.GetComponent<MeshFilter>().mesh = c.alternativeMesh;
+        }
 		if (bc != null)
 			bc.stats = c.stats;
 		r.transform.localScale = new Vector3(c.ballSize,c.ballSize,c.ballSize);
@@ -193,8 +186,9 @@ public class RaceLobby : MonoBehaviour {
 				character--;
 				if (character < 0)
 					character += totalCharacters;
-				if (!raceSetup.settings.allowSuperSanic && character == superSanicID) {
-					character = superSanicID - 1;
+                if (!raceSetup.settings.allowSuperSanic && Global.characters[character].attributes.Contains("2fast"))
+                {
+					character -= 1;
 				}
 
 				client.networkView.RPC("SetCharacter",RPCMode.All,Network.player,character);
@@ -355,7 +349,7 @@ public class RaceLobby : MonoBehaviour {
 						}
 						if (GUILayout.Button("Set to random characters",smallButton)) {
 							for (int i=0;i<tempSettings.aiCharacters.Count;i++) {
-								tempSettings.aiCharacters[i] = Random.Range(0,raceSetup.characters.Length);
+                                tempSettings.aiCharacters[i] = Random.Range(0, Global.characters.Length);
 							}
 						}
 						if (GUILayout.Button("Set to default characters",smallButton)) {
@@ -535,7 +529,8 @@ public class RaceLobby : MonoBehaviour {
 				GUILayout.Label("Stage select",titleStyle);
 				stageSelectScroll = GUILayout.BeginScrollView(stageSelectScroll);
 				//GUILayout.BeginHorizontal(GUILayout.Width(350));
-				foreach (Stage s in raceSetup.stages) {
+                foreach (Stage s in Global.stages)
+                {
 					GUILayout.BeginHorizontal();
 					GUILayout.Box(s.picture,GUILayout.Width (350),GUILayout.Height(233));
 					GUILayout.BeginVertical();
