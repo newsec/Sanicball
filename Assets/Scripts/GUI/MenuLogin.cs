@@ -133,10 +133,14 @@ public class MenuLogin : MonoBehaviour {
 		centerStyle.alignment = TextAnchor.MiddleCenter;
 		if (isStarting) {
 			GUILayout.FlexibleSpace();
+            Spinner.DrawAt(new Vector2(rect.width / 2 - 16, rect.height / 2 - 16 - 32));
+            GUILayout.Space(32);
 			GUILayout.Label("Starting up...",centerStyle);
 			GUILayout.FlexibleSpace();
 		} else if (isRemembering) { //Don't show the login form if remembering
 			GUILayout.FlexibleSpace();
+            Spinner.DrawAt(new Vector2(rect.width / 2 - 16, rect.height / 2 - 16 - 32));
+            GUILayout.Space(32);
 			GUILayout.Label("Logging in...",centerStyle);
 			GUILayout.FlexibleSpace();
 		} else {
@@ -170,7 +174,7 @@ public class MenuLogin : MonoBehaviour {
 					} else if (token.Trim().Length <= 0) { //Has the user typed something in the token field?
 						status = "You need to type in your token.";
 					} else { //Log in with the Game Jolt API
-						status = "Logging in...";
+						status = "@spinner/Logging in...";
 						isVerifying = true;
 						GJAPI.Users.Verify(username,token);
 						GJAPI.Users.VerifyCallback += LogInCallback;
@@ -211,7 +215,14 @@ public class MenuLogin : MonoBehaviour {
 				}
 				GUILayout.EndHorizontal();
 			}
-			GUILayout.Label(status);
+            if (status.StartsWith("@spinner/"))
+            {
+                Spinner.Draw(status.Replace("@spinner/", ""));
+            }
+            else
+            {
+                GUILayout.Label(status);
+            }
 		}
 		GUILayout.EndArea();
 	}

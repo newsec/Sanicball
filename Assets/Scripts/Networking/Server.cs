@@ -92,7 +92,6 @@ public class Server : MonoBehaviour {
 	}
 
 	public void SendServerMsg(string text) {
-		Vector3 col = new Vector3(1,0.2f,0.2f);
 		if (Network.isServer) {
 			GetComponent<Chat>().AddMessage("[System]",text,new Color(1.0f, 0.2f, 0.2f));
 		}

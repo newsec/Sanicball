@@ -214,7 +214,14 @@ public class MenuPageStartGame {
 		maxPlayers = GUILayout.HorizontalSlider(maxPlayers,1,64);
 		addToServerList = GUILayout.Toggle(addToServerList,"Show in server browser");
 		//GUILayout.Label("NAT Status: "+NatChecker.status);
-		GUILayout.Label(message);
+        if (message.StartsWith("@spinner/"))
+        {
+            Spinner.Draw(message.Replace("@spinner/", ""));
+        }
+        else
+        {
+            GUILayout.Label(message);
+        }
 		if (GUILayout.Button ("Start") || (Event.current.isKey && Event.current.keyCode == KeyCode.Return)) {
 			StartServer();
 		}
@@ -239,7 +246,7 @@ public class MenuPageStartGame {
 			message = "You're already trying to start or join a server!";
 			return;
 		}
-		message = "Starting server..";
+		message = "@spinner/Starting server..";
 		int realMaxPlayers = (int)maxPlayers;
 		Server s = (Server)GameObject.Instantiate(serverObject);
 		s.settings.gameName = gameName;
@@ -277,7 +284,14 @@ public class MenuPageJoinGame {
 		ip = GUILayout.TextField(ip);
 		GUILayout.Label("Port (Default 25000)");
 		port = GUILayout.TextField(port);
-		GUILayout.Label(connectionStatus.message);
+        if (connectionStatus.message.StartsWith("@spinner/"))
+        {
+            Spinner.Draw(connectionStatus.message.Replace("@spinner/", ""));
+        }
+        else
+        {
+            GUILayout.Label(connectionStatus.message);
+        }
 		if (!connectionStatus.isConnecting) {
 			if (GUILayout.Button ("Connect") || (Event.current.isKey && Event.current.keyCode == KeyCode.Return)) {
 				Connect ();
@@ -469,13 +483,20 @@ public class MenuPageOptions {
 				} else if (loginToken.Trim().Length <= 0) { //Has the user typed something in the token field?
 					status = "You need to type in your token.";
 				} else { //Log in with the Game Jolt API
-					status = "Logging in...";
+					status = "@spinner/Logging in...";
 					isVerifying = true;
 					GJAPI.Users.Verify(loginName,loginToken);
 					GJAPI.Users.VerifyCallback += LogInCallback;
 				}
 			}
-			GUILayout.Label(status);
+            if (status.StartsWith("@spinner/"))
+            {
+                Spinner.Draw(status.Replace("@spinner/", ""));
+            }
+            else
+            {
+                GUILayout.Label(status);
+            }
 			if (GUILayout.Button("Back",smallButton) && !isVerifying) {
 				page = 3;
 			}

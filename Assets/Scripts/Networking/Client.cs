@@ -24,7 +24,7 @@ public class Client : MonoBehaviour {
 	bool intentionalDisconnect = false;
 	
 	public ConnectionStatus Connect(string ip, int port) {
-		ConnectionStatus msg = new ConnectionStatus("Connecting...");
+		ConnectionStatus msg = new ConnectionStatus("@spinner/Connecting...");
 		NetworkConnectionError nce = Network.Connect(ip,port);
 		msg.isConnecting = true;
 		Application.RegisterLogCallback(LogCallback);
@@ -38,7 +38,7 @@ public class Client : MonoBehaviour {
 	}
 
 	public ConnectionStatus Connect(HostData data) {
-		ConnectionStatus msg = new ConnectionStatus("Connecting...");
+        ConnectionStatus msg = new ConnectionStatus("@spinner/Connecting...");
 		NetworkConnectionError nce = Network.Connect(data);
 		msg.isConnecting = true;
 		Application.RegisterLogCallback(LogCallback);
@@ -95,7 +95,7 @@ public class Client : MonoBehaviour {
 	//Unity functions
 
 	void OnConnectedToServer() {
-		joinGameMessage.message = "Server is checking your game version...";
+        joinGameMessage.message = "@spinner/Server is checking your game version...";
 		networkView.RPC("CheckGameVersion",RPCMode.Server,Network.player,GameVersion.AsFloat);
 		Application.RegisterLogCallback(null); //Remove NAT fail checker
 	}
@@ -233,7 +233,7 @@ public class Client : MonoBehaviour {
 
 	[RPC]
 	void AcceptGameVersion() {
-		joinGameMessage.message = "Success! Loading...";
+        joinGameMessage.message = "@spinner/Success! Loading...";
 		networkView.RPC("RequestPlayerSetup",RPCMode.Server,Network.player,GameSettings.user.playerName,GameSettings.user.token);
 	}
 	

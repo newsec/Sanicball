@@ -33,7 +33,7 @@ public class ServerBrowser : MonoBehaviour {
 	}
 
 	void UpdateServerList() {
-		header = "Refreshing..";
+		header = "@spinner/Refreshing..";
 		timeout = 7;
 		MasterServer.ClearHostList();
 		MasterServer.RequestHostList("sanicball");
@@ -115,7 +115,14 @@ public class ServerBrowser : MonoBehaviour {
 				sortmodeStr += " (reversed)";
 			}
 		}*/
-		GUILayout.Label(header);
+        if (header.StartsWith("@spinner/"))
+        {
+            Spinner.Draw(header.Replace("@spinner/", ""));
+        }
+        else
+        {
+            GUILayout.Label(header);
+        }
 		scroll = GUILayout.BeginScrollView(scroll);
 		//Column widths
 		float serverNameMinWidth = 400;
@@ -182,12 +189,19 @@ public class ServerBrowser : MonoBehaviour {
 				Cancel ();
 			}
 		}
-		GUIStyle rightAlign = new GUIStyle(GUI.skin.label);
-		rightAlign.alignment = TextAnchor.MiddleRight;
-		GUILayout.Label(connectionStatus.message,rightAlign,GUILayout.ExpandWidth(true));
+        if (connectionStatus != null && connectionStatus.message != null)
+        {
+            if (connectionStatus.message.StartsWith("@spinner/"))
+            {
+                Spinner.Draw(connectionStatus.message.Replace("@spinner/", ""), null, 0);
+            }
+            else
+            {
+                GUILayout.Label(connectionStatus.message, GUILayout.ExpandWidth(true));
+            }
+        }
 		GUILayout.EndHorizontal();
-
-		GUILayout.EndArea();
+        GUILayout.EndArea();
 	}
 
 	void Connect(HostData data) {
