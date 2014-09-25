@@ -9,6 +9,7 @@ public class MenuMain : MonoBehaviour {
 	public MenuPageStartGame startGame;
 	public MenuPageJoinGame joinGame;
 	public MenuPageOptions options;
+    public MenuPageCustomization customization;
 
 	MenuPage page;
 	Vector2 scrollPos;
@@ -73,6 +74,9 @@ public class MenuMain : MonoBehaviour {
 		case MenuPage.Options:
 			headerText = "Options";
 			break;
+        case MenuPage.Customization:
+            headerText = "Customization";
+            break;
 		case MenuPage.StartGame:
 			headerText = "Start server";
 			break;
@@ -96,6 +100,10 @@ public class MenuMain : MonoBehaviour {
 			if (GUILayout.Button("Options")) {
 				page = MenuPage.Options;
 			}
+            if (GUILayout.Button("Customization"))
+            {
+                page = MenuPage.Customization;
+            }
 			if (GUILayout.Button("Credits")) {
 				page = MenuPage.Credits;
 			}
@@ -125,14 +133,20 @@ public class MenuMain : MonoBehaviour {
 			options.DrawGUI();
 		}
 
+        if(page == MenuPage.Customization)
+        {
+            customization.DrawGUI();
+        }
+
 		if (page == MenuPage.Credits) {
 			GUIStyle titleStyle = new GUIStyle(GUI.skin.label);
 			titleStyle.fontSize = 24;
 			titleStyle.fontStyle = FontStyle.Bold;
 			GUIStyle creditsStyle = new GUIStyle(GUI.skin.label);
 			creditsStyle.fontSize = 16;
-			GUILayout.Label("Game/Coding/Models by BK-TN (That's me)\n" +
-			                "Sanicball is built with Unity3D and coded in C#.",creditsStyle);
+			GUILayout.Label("Original game by BK-TN \n" +
+			                "Current version made by uhm.. github?\n" + 
+                            "Contribute at: https://github.com/HannesMann/Sanicball",creditsStyle);
 			GUILayout.Label("Graphics",titleStyle);
 			GUILayout.Label("- GRASS TEXTURE: Solon001 on Deviantart\n" +
 			                "Most other textures are either made by Unity or taken from royality-free texture sites.",creditsStyle);
@@ -192,7 +206,7 @@ public class MenuMain : MonoBehaviour {
 }
 
 public enum MenuPage {
-	Main, StartGame, JoinGame, Options, Credits
+	Main, StartGame, JoinGame, Options, Customization, Credits
 }
 
 [System.Serializable]
@@ -553,4 +567,111 @@ public class MenuPageOptions {
 		GameSettings.Apply(true);
 		GameSettings.Save();
 	}
+}
+
+[System.Serializable]
+public class MenuPageCustomization
+{
+    public MenuMain menu;
+
+    int page = 0;
+
+    private Vector2 scroll;
+
+    public void DrawGUI()
+    {
+        GUIStyle smallButton = GUI.skin.GetStyle("smallButton");
+
+        if (page == 0)
+        {
+            if (GUILayout.Button("Music"))
+                page = 1;
+            if (GUILayout.Button("Back", smallButton))
+                menu.SetPage(MenuPage.Main);
+        }
+
+        if (page == 1)
+        {
+            // music
+            GUILayout.Space(10);
+            scroll = GUILayout.BeginScrollView(scroll);
+            GUIStyle style = new GUIStyle(GUI.skin.GetStyle("SmallButtonOdd")) { fontSize = 14, alignment = TextAnchor.MiddleRight };
+            GUIStyle styleText = new GUIStyle(GUI.skin.GetStyle("LabelOdd")) { wordWrap = true, fontSize = 14, alignment = TextAnchor.MiddleLeft };
+            if (GameSettings.userPlaylist.Count > 0)
+            {
+                GUILayout.Label("My music", new GUIStyle(GUI.skin.label) { wordWrap = true, fontSize = 18 });
+                foreach (ExternalSong s in GameSettings.userPlaylist.ToArray())
+                {
+                    GUILayout.Space(1);
+                    GUILayout.BeginHorizontal();
+                    GUILayout.Label(s.song.name, styleText);
+                    if (GUILayout.Button("Remove", style, GUILayout.MaxWidth(style.CalcSize(new GUIContent("Remove")).x), GUILayout.ExpandHeight(true)))
+                    {
+                        s.Dispose();
+                        GameSettings.userPlaylist.Remove(s);
+                    }
+                    GUILayout.EndHorizontal();
+                    GUILayout.Space(1);
+                }
+                GUILayout.Space(10);
+            }
+            GUILayout.Label("Inbuilt music", new GUIStyle(GUI.skin.label) { wordWrap = true, fontSize = 18 });
+            foreach (Song s in Global.playlist)
+            {
+                GUILayout.Space(1);
+                GUILayout.BeginHorizontal();
+                style = new GUIStyle(GUI.skin.GetStyle(s.enabled ? "SmallButtonOdd" : "SmallButtonDisabled")) { fontSize = 14, alignment = TextAnchor.MiddleRight };
+                styleText = new GUIStyle(GUI.skin.GetStyle(s.enabled ? "LabelOdd" : "LabelDisabled")) { wordWrap = true, fontSize = 14, alignment = TextAnchor.MiddleLeft };
+                GUILayout.Label(s.name, styleText);
+                if (s.enabled)
+                {
+                    if (GUILayout.Button("Disable", style, GUILayout.MaxWidth(style.CalcSize(new GUIContent("Disable")).x), GUILayout.ExpandHeight(true)))
+                    {
+                        s.enabled = false;
+                    }
+                }
+                else
+                {
+                    if (GUILayout.Button("Enable", style, GUILayout.MaxWidth(style.CalcSize(new GUIContent("Disable")).x), GUILayout.ExpandHeight(true)))
+                    {
+                        s.enabled = true;
+                    }
+                }
+                GUILayout.EndHorizontal();
+                GUILayout.Space(1);
+            }
+            GUILayout.EndScrollView();
+            GUILayout.Space(10);
+            if (GUILayout.Button("Add", smallButton))
+            {
+                menu.StartCoroutine(AddMusic());
+            }
+            if (GUILayout.Button("Back", smallButton))
+            {
+                page = 0;
+                GameSettings.Save();
+            }
+        }
+    }
+
+    private IEnumerator AddMusic()
+    {
+        if (Screen.fullScreen)
+        {
+            Screen.SetResolution(Screen.width, Screen.height, false);
+            yield return new WaitForSeconds(0.5f);
+        }
+        System.Windows.Forms.OpenFileDialog openFileDialog = new System.Windows.Forms.OpenFileDialog();
+        openFileDialog.Filter = "Sound Files (*.mp3, *.ogg)|*.mp3;*.ogg|All Files (*.*)|*.*";
+        openFileDialog.Multiselect = true;
+        if (openFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+        {
+            foreach (string s in openFileDialog.FileNames)
+            {
+                GameSettings.userPlaylist.Add(new ExternalSong(s));
+            }
+        }
+        Screen.SetResolution(Screen.width, Screen.height, GameSettings.fullscreen);
+        yield return null;
+    }
 }

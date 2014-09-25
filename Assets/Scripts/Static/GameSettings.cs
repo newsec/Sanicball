@@ -17,6 +17,8 @@ public static class GameSettings {
 	public static float volume = 1;
 	public static bool music = true;
 	public static bool sanicSpeedSong = true;
+    public static List<ExternalSong> userPlaylist = new List<ExternalSong>();
+    private static bool musicLoaded = false;
 	
 	public static void Init () {
 		Load();
@@ -41,6 +43,30 @@ public static class GameSettings {
 		volume = PlayerPrefs.GetFloat("Settings_Volume",volume);
 		music = PlayerPrefsX.GetBool("Settings_Music",music);
 		sanicSpeedSong = PlayerPrefsX.GetBool("Settings_SanicSpeedSong",sanicSpeedSong);
+        string savedPlaylist = PlayerPrefs.GetString("User_Playlist", "");
+        if (!string.IsNullOrEmpty(savedPlaylist) && !musicLoaded)
+        {
+            foreach(string s in savedPlaylist.Split('@'))
+            {
+                GameSettings.userPlaylist.Add(new ExternalSong(s));
+            }
+        }
+
+        string disabledSongs = PlayerPrefs.GetString("User_DisabledSongs", "");
+        if (!string.IsNullOrEmpty(disabledSongs) && !musicLoaded)
+        {
+            foreach (string s in disabledSongs.Split('@'))
+            {
+                foreach(Song song in Global.playlist)
+                {
+                    if(song.name.Equals(s))
+                    {
+                        song.enabled = false;
+                    }
+                }
+            }
+        }
+        musicLoaded = true;
 
 		//Get resolution
 		for (int i=0;i<Screen.resolutions.Length;i++) {
@@ -65,6 +91,31 @@ public static class GameSettings {
 		PlayerPrefs.SetFloat("Settings_Volume",volume);
 		PlayerPrefsX.SetBool("Settings_Music",music);
 		PlayerPrefsX.SetBool("Settings_SanicSpeedSong",sanicSpeedSong);
+        string toBeSavedPlaylist = "";
+        foreach(ExternalSong s in userPlaylist)
+        {
+            toBeSavedPlaylist += s.filename + "@";
+        }
+        if(toBeSavedPlaylist.Length > 0)
+        {
+            // remove the last @
+            toBeSavedPlaylist = toBeSavedPlaylist.Remove(toBeSavedPlaylist.Length - 1, 1);
+        }
+        PlayerPrefs.SetString("User_Playlist", toBeSavedPlaylist);
+        string toBeSavedDisabledSongs = "";
+        foreach (Song s in Global.playlist)
+        {
+            if (!s.enabled)
+            {
+                toBeSavedDisabledSongs += s.name + "@";
+            }
+        }
+        if (toBeSavedDisabledSongs.Length > 0)
+        {
+            // remove the last @
+            toBeSavedDisabledSongs = toBeSavedDisabledSongs.Remove(toBeSavedDisabledSongs.Length - 1, 1);
+        }
+        PlayerPrefs.SetString("User_DisabledSongs", toBeSavedDisabledSongs);
 		PlayerPrefs.Save();
 	}
 	
