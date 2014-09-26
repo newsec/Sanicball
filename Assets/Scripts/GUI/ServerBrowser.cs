@@ -36,7 +36,7 @@ public class ServerBrowser : MonoBehaviour {
 		header = "@spinner/Refreshing..";
 		timeout = 7;
 		MasterServer.ClearHostList();
-		MasterServer.RequestHostList("sanicball");
+		MasterServer.RequestHostList("sanicball-unofficial");
 	}
 
 	void OnMasterServerEvent(MasterServerEvent e) {
