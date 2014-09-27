@@ -614,6 +614,10 @@ Prefab:
       propertyPath: customization.exitButton
       value: 
       objectReference: {fileID: 2800000, guid: e92e8f508dc79d240b0dd43092b7cc2f, type: 3}
+    - target: {fileID: 11400004, guid: 6439c1a599d03a54691ceefa0d35b29e, type: 2}
+      propertyPath: menu
+      value: 
+      objectReference: {fileID: 919391359}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 6439c1a599d03a54691ceefa0d35b29e, type: 2}
   m_RootGameObject: {fileID: 919391357}
@@ -865,6 +869,9 @@ MonoBehaviour:
     keybindToChange: 
   customization:
     menu: {fileID: 919391359}
+  page: 0
+  lastActualPage: 0
+  pageOffset: 0
 --- !u!114 &919391360
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -891,6 +898,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   titleTexture: {fileID: 2800000, guid: 3281016baaaa74f48b589faee4e01a28, type: 3}
+  menu: {fileID: 919391359}
 --- !u!114 &919391362
 MonoBehaviour:
   m_ObjectHideFlags: 0
