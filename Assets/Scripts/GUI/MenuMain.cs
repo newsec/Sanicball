@@ -31,11 +31,11 @@ public class MenuMain : MonoBehaviour {
 	void Update() {
         if(page != MenuPage.None)
         {
-            pageOffset = Mathf.Lerp(pageOffset, 400f, Time.deltaTime * 15f);
+            pageOffset = Mathf.Lerp(pageOffset, 400f, Time.deltaTime * 25f);
         }
         else
         {
-            pageOffset = Mathf.Lerp(pageOffset, 0f, Time.deltaTime * 15f);
+            pageOffset = Mathf.Lerp(pageOffset, 0f, Time.deltaTime * 25f);
         }
 		if (Input.GetKeyDown(KeyCode.Escape)) {
 			if (string.IsNullOrEmpty(options.keybindToChange)) {
