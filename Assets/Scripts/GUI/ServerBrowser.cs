@@ -16,6 +16,8 @@ public class ServerBrowser : MonoBehaviour {
 	bool isSortingReversed = false;
 	ConnectionStatus connectionStatus = new ConnectionStatus();
 
+    float offset;
+
 	public void Toggle() {
 		if (hidden)
 			Show();
@@ -58,6 +60,15 @@ public class ServerBrowser : MonoBehaviour {
 	}
 
 	void Update() {
+        int width = Mathf.Min(960, Screen.width - 400);
+        if(hidden)
+        {
+            offset = Mathf.Lerp(offset, 0f, Time.deltaTime * 25f);
+        }
+        else
+        {
+            offset = Mathf.Lerp(offset, width, Time.deltaTime * 25f);
+        }
 		if (timeout > 0) {
 			timeout -= Time.deltaTime;
 			if (timeout <= 0) {
@@ -95,7 +106,7 @@ public class ServerBrowser : MonoBehaviour {
 	}
 
 	void OnGUI() {
-		if (hidden) return;
+        if (offset < 1) return;
 		GUI.skin = skin;
 		GUIStyle smallButton = GUI.skin.GetStyle("SmallButton");
 		GUIStyle smallButtonOdd = GUI.skin.GetStyle("SmallButtonOdd");
@@ -104,7 +115,7 @@ public class ServerBrowser : MonoBehaviour {
 		int width = Mathf.Min(960,Screen.width - 400);
 		int height = Screen.height;
 
-		Rect rect = new Rect((Screen.width-400)-width,Screen.height/2-height/2,width,height);
+		Rect rect = new Rect((Screen.width-400)-(offset),Screen.height/2-height/2,width,height);
 
 		GUI.Box(rect,"");
 		GUILayout.BeginArea(rect);
