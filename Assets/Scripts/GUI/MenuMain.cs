@@ -354,13 +354,16 @@ public class MenuPageJoinGame {
 		ip = GUILayout.TextField(ip);
 		GUILayout.Label("Port (Default 25000)");
 		port = GUILayout.TextField(port);
-        if (connectionStatus.message.StartsWith("@spinner/"))
+        if (connectionStatus != null && connectionStatus.message != null)
         {
-            Spinner.Draw(connectionStatus.message.Replace("@spinner/", ""));
-        }
-        else
-        {
-            GUILayout.Label(connectionStatus.message);
+            if (connectionStatus.message.StartsWith("@spinner/"))
+            {
+                Spinner.Draw(connectionStatus.message.Replace("@spinner/", ""));
+            }
+            else
+            {
+                GUILayout.Label(connectionStatus.message);
+            }
         }
 		if (!connectionStatus.isConnecting) {
 			if (GUILayout.Button ("Connect") || (Event.current.isKey && Event.current.keyCode == KeyCode.Return)) {
