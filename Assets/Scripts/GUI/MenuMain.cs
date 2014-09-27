@@ -62,6 +62,7 @@ public class MenuMain : MonoBehaviour {
 
     void OnGUI()
     {
+        GUI.depth = -100;
         string headerText = "";
         switch (lastActualPage)
         {
