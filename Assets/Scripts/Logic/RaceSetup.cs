@@ -22,6 +22,7 @@ public class Character {
 	public float ballSize = 1;
     public string[] attributes;
     public Mesh alternativeMesh = null;
+    public string author;
 }
 
 public class RaceSetup : MonoBehaviour {

@@ -192,8 +192,6 @@ public class RaceLobby : MonoBehaviour {
 
 			GUILayout.BeginVertical();
 			GUIStyle centeredLabel = GUI.skin.GetStyle("CenteredLabel");
-			string pickCharacterText = ready ? "Character locked" : "Pick character";
-			GUILayout.Label(pickCharacterText,centeredLabel);
 			GUIStyle nameStyle = new GUIStyle(centeredLabel);
 			if (Screen.width - 280*2 < 400) {
 				nameStyle.fontSize = 24;
@@ -203,6 +201,7 @@ public class RaceLobby : MonoBehaviour {
 			}
 			GUILayout.FlexibleSpace();
 			GUILayout.Label(GetCharacterName(character),nameStyle);
+            GUILayout.Label(Global.characters[character].author, new GUIStyle(centeredLabel) { fontSize = 18 });
 			GUILayout.FlexibleSpace();
 			GUILayout.EndVertical();
 

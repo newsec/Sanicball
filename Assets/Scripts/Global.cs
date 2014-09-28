@@ -17,14 +17,21 @@ public class Global : Singleton<MonoBehaviour>
 
     public GUISkin skin;
 
+    private static Global instance;
+
     void Awake()
     {
-        UnityEngine.Object.DontDestroyOnLoad(this);
-        if (characters == null || stages == null || playlist == null)
+        if (instance == null)
         {
+            instance = this;
+            UnityEngine.Object.DontDestroyOnLoad(this.gameObject);
             characters = serializeCharacters;
             stages = serializeStages;
             playlist = serializePlaylist;
+        }
+        else
+        {
+            UnityEngine.Object.Destroy(this.gameObject);
         }
     }
 
