@@ -1181,6 +1181,7 @@ MonoBehaviour:
     ballSize: 1
     attributes: []
     alternativeMesh: {fileID: 0}
+    author: BK-TN
   - name: Knackles
     stats:
       rollSpeed: 100
@@ -1193,6 +1194,7 @@ MonoBehaviour:
     ballSize: 1
     attributes: []
     alternativeMesh: {fileID: 0}
+    author: BK-TN
   - name: Taels
     stats:
       rollSpeed: 100
@@ -1205,6 +1207,7 @@ MonoBehaviour:
     ballSize: 1
     attributes: []
     alternativeMesh: {fileID: 0}
+    author: BK-TN
   - name: Ame Roes
     stats:
       rollSpeed: 100
@@ -1217,6 +1220,7 @@ MonoBehaviour:
     ballSize: 1
     attributes: []
     alternativeMesh: {fileID: 0}
+    author: BK-TN
   - name: Shedew
     stats:
       rollSpeed: 100
@@ -1229,6 +1233,7 @@ MonoBehaviour:
     ballSize: 1
     attributes: []
     alternativeMesh: {fileID: 0}
+    author: BK-TN
   - name: Roge da Bat
     stats:
       rollSpeed: 100
@@ -1241,6 +1246,7 @@ MonoBehaviour:
     ballSize: 1
     attributes: []
     alternativeMesh: {fileID: 0}
+    author: BK-TN
   - name: Asspio
     stats:
       rollSpeed: 100
@@ -1253,6 +1259,7 @@ MonoBehaviour:
     ballSize: 1
     attributes: []
     alternativeMesh: {fileID: 0}
+    author: BK-TN
   - name: Big da Cat
     stats:
       rollSpeed: 50
@@ -1265,6 +1272,7 @@ MonoBehaviour:
     ballSize: 2
     attributes: []
     alternativeMesh: {fileID: 0}
+    author: BK-TN
   - name: Dr. Aggmen
     stats:
       rollSpeed: 100
@@ -1277,6 +1285,7 @@ MonoBehaviour:
     ballSize: 1
     attributes: []
     alternativeMesh: {fileID: 4300000, guid: 42d2136b6a1d3fd47b1bfea66f18dfd0, type: 3}
+    author: BK-TN
   - name: Chermy Bee
     stats:
       rollSpeed: 110
@@ -1289,6 +1298,7 @@ MonoBehaviour:
     ballSize: .800000012
     attributes: []
     alternativeMesh: {fileID: 0}
+    author: BK-TN
   - name: Sulver
     stats:
       rollSpeed: 100
@@ -1301,6 +1311,20 @@ MonoBehaviour:
     ballSize: 1
     attributes: []
     alternativeMesh: {fileID: 0}
+    author: BK-TN
+  - name: Coldsteel
+    stats:
+      rollSpeed: 100
+      airSpeed: 15
+      jumpHeight: 14
+      grip: 0
+    material: {fileID: 2100000, guid: 655fc666a82a48e498c7f1bf84e35900, type: 2}
+    minimapIcon: {fileID: 2100000, guid: a5e040bd7be58394e921ca6afe245a5f, type: 2}
+    trail: {fileID: 2100000, guid: 489996565933a6548ac43105f504fb01, type: 2}
+    ballSize: 1
+    attributes: []
+    alternativeMesh: {fileID: 0}
+    author: BK-TN
   - name: Super Sanic
     stats:
       rollSpeed: 400
@@ -1315,6 +1339,7 @@ MonoBehaviour:
     - 2fast
     - sponsored by mlg
     alternativeMesh: {fileID: 0}
+    author: BK-TN
   serializeStages:
   - name: Green Hill Zone
     id: 0
