@@ -6,7 +6,7 @@ public class RaceUI : MonoBehaviour {
 
 	Racer racer;
 
-	int sanicspeed;
+	long sanicspeed;
 
 	string checkpointLapString;
 	string checkpointString;
@@ -19,7 +19,7 @@ public class RaceUI : MonoBehaviour {
 	}
 
 	void Update() {
-		sanicspeed = Mathf.RoundToInt(rigidbody.velocity.magnitude);
+		sanicspeed = (long) rigidbody.velocity.magnitude;
 
 		//Set fast music
 		MusicPlayer player = FindObjectOfType<MusicPlayer>();
