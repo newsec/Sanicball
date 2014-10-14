@@ -8,8 +8,6 @@ public class RaceLobby : MonoBehaviour {
 	public Racer ballPlayerLobbyPrefab;
 	public Racer ballRemoteLobbyPrefab;
 
-	public LobbyCamera lobbyCamera;
-
 	bool raceSettingsVisible = false;
 	bool showAISettings = false;
 	bool stageSelect = false;
@@ -100,9 +98,7 @@ public class RaceLobby : MonoBehaviour {
 		settingsEqual = Network.isServer && tempSettings.Equals(raceSetup.settings);
 
 		int charSelectWidth = Mathf.Min(320,Screen.width - 80 - 280*2);
-		Rect charSelectRect = new Rect(Screen.width/2-charSelectWidth/2,Screen.height-92,charSelectWidth,92);
-		
-		lobbyCamera.zoomAtPlayer = charSelectRect.Contains(new Vector2(Input.mousePosition.x,Screen.height - Input.mousePosition.y));
+        Rect charSelectRect = new Rect(Screen.width / 2 - charSelectWidth / 2, Screen.height - 92, charSelectWidth, 92);
 
 		//Slide race settings up and down
 		if (raceSettingsVisible) {
@@ -196,8 +192,6 @@ public class RaceLobby : MonoBehaviour {
 
 			GUILayout.BeginVertical();
 			GUIStyle centeredLabel = GUI.skin.GetStyle("CenteredLabel");
-			string pickCharacterText = ready ? "Character locked" : "Pick character";
-			GUILayout.Label(pickCharacterText,centeredLabel);
 			GUIStyle nameStyle = new GUIStyle(centeredLabel);
 			if (Screen.width - 280*2 < 400) {
 				nameStyle.fontSize = 24;
@@ -207,6 +201,7 @@ public class RaceLobby : MonoBehaviour {
 			}
 			GUILayout.FlexibleSpace();
 			GUILayout.Label(GetCharacterName(character),nameStyle);
+            GUILayout.Label(Global.characters[character].author, new GUIStyle(centeredLabel) { fontSize = 18 });
 			GUILayout.FlexibleSpace();
 			GUILayout.EndVertical();
 

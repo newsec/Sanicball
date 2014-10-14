@@ -1,11 +1,15 @@
 using UnityEngine;
 using System.Collections;
+using System.Linq;
+using System.Collections.Generic;
 
 [RequireComponent(typeof(AudioSource))]
 public class MusicPlayer : MonoBehaviour {
 	public GUISkin skin;
 	public AudioClip mlgSong;
 	public AudioSource fastSource;
+
+    private List<Song> playlist;
 
 	int currentSongID;
 	bool isPlaying;
@@ -21,50 +25,92 @@ public class MusicPlayer : MonoBehaviour {
 	float slidePositionMax = 20;
 	
 	void Start() {
-		slidePosition = slidePositionMax;
-		ShuffleSongs();
-		audio.clip = Global.playlist[0].clip;
-		currentSongID = 0;
-		isPlaying = audio.isPlaying;
+        playlist = new List<Song>();
+        playlist = playlist.Concat(Global.playlist.Where(song => song.enabled)).ToList();
+        foreach (ExternalSong s in GameSettings.userPlaylist)
+        {
+            if (s.loaded)
+            {
+                playlist.Add(s.song);
+            }
+        }
+        if (playlist.Count > 0)
+        {
+            slidePosition = slidePositionMax;
+            ShuffleSongs();
+            audio.clip = playlist[0].clip;
+            currentSongID = 0;
+            isPlaying = audio.isPlaying;
+        }
+        else
+        {
+            isPlaying = false;
+        }
 		if (!GameSettings.music) {
 			fastSource.Stop();
 		}
 	}
-	void Update() {
-		//If it's not playing but supposed to play, change song
-		if ((!audio.isPlaying || GameSettings.keybinds.GetKeyDown("nextsong")) && isPlaying) {
-            if (currentSongID < Global.playlist.Length - 1)
+    void Update()
+    {
+        foreach (ExternalSong s in GameSettings.userPlaylist)
+        {
+            if (s.loaded && !playlist.Contains(s.song))
             {
-				currentSongID++;
-			} else {
-				currentSongID = 0;
-			}
-            audio.clip = Global.playlist[currentSongID].clip;
-			slidePosition = slidePositionMax;
-			Play ();
-		}
-		//Timer
-		if (timer > 0) {
-			timer -= Time.deltaTime;
-		}
+                playlist.Add(s.song);
+            }
+        }
+        if (playlist.Count > 0)
+        {
+            //If it's not playing but supposed to play, change song
+            if ((!audio.isPlaying || GameSettings.keybinds.GetKeyDown("nextsong")) && isPlaying)
+            {
+                if (currentSongID < playlist.Count - 1)
+                {
+                    currentSongID++;
+                }
+                else
+                {
+                    currentSongID = 0;
+                }
+                audio.clip = playlist[currentSongID].clip;
+                slidePosition = slidePositionMax;
+                Play();
+            }
+            //Timer
+            if (timer > 0)
+            {
+                timer -= Time.deltaTime;
+            }
+        }
 
-		if (fastMode && fastSource.volume < 1) {
-			fastSource.volume = Mathf.Min(1,fastSource.volume + Time.deltaTime * 0.25f);
-			audio.volume = 0.5f - fastSource.volume/2;
-		}
-		if (!fastMode && fastSource.volume > 0) {
-			fastSource.volume = Mathf.Max(0,fastSource.volume - Time.deltaTime * 0.5f);
-			audio.volume = 0.5f - fastSource.volume/2;
-		}
-		if (timer > 0) {
-			slidePosition = Mathf.Lerp(slidePosition,0,Time.deltaTime);
-		} else {
-			slidePosition = Mathf.Lerp(slidePosition,slidePositionMax,Time.deltaTime);
-		}
-	}
+        if (fastMode && fastSource.volume < 1)
+        {
+            fastSource.volume = Mathf.Min(1, fastSource.volume + Time.deltaTime * 0.25f);
+            audio.volume = 0.5f - fastSource.volume / 2;
+        }
+        if (!fastMode && fastSource.volume > 0)
+        {
+            fastSource.volume = Mathf.Max(0, fastSource.volume - Time.deltaTime * 0.5f);
+            audio.volume = 0.5f - fastSource.volume / 2;
+        }
+        if (playlist.Count > 0)
+        {
+            if (timer > 0)
+            {
+                slidePosition = Mathf.Lerp(slidePosition, 0, Time.deltaTime * 8f);
+            }
+            else
+            {
+                slidePosition = Mathf.Lerp(slidePosition, slidePositionMax, Time.deltaTime * 8f);
+            }
+        }
+    }
 
 	public void Play() {
-        Play(Global.playlist[currentSongID].name);
+        if (playlist.Count > 0)
+        {
+            Play(playlist[currentSongID].name);
+        }
 	}
 
 	public void Play(string credits) {
@@ -86,32 +132,36 @@ public class MusicPlayer : MonoBehaviour {
 	}
 
 	void OnGUI() {
-		if (slidePosition < slidePositionMax-0.1f) {
-			GUI.skin = skin;
-			GUIStyle style = new GUIStyle(GUI.skin.label);
-			style.fontSize = 16;
-			style.alignment = TextAnchor.MiddleRight;
-			Rect rect = new Rect(0,Screen.height-30+slidePosition,Screen.width,30);
+        if (playlist.Count > 0)
+        {
+            if (slidePosition < slidePositionMax - 0.1f)
+            {
+                GUI.skin = skin;
+                GUIStyle style = new GUIStyle(GUI.skin.label);
+                style.fontSize = 16;
+                style.alignment = TextAnchor.MiddleRight;
+                Rect rect = new Rect(0, Screen.height - 30 + slidePosition, Screen.width, 30);
 
-			//GUIX.ShadowLabel(rect,currentSongCredits,style,1);
-			GUILayout.BeginArea(rect);
-			GUILayout.FlexibleSpace (); //Push down
-			GUILayout.BeginHorizontal();
-			GUILayout.FlexibleSpace(); //Push to the right
-			GUILayout.Label(currentSongCredits,GUI.skin.GetStyle("SoundCredits"),GUILayout.ExpandWidth(false));
-			GUILayout.EndHorizontal();
-			GUILayout.EndArea();
-		}
+                //GUIX.ShadowLabel(rect,currentSongCredits,style,1);
+                GUILayout.BeginArea(rect);
+                GUILayout.FlexibleSpace(); //Push down
+                GUILayout.BeginHorizontal();
+                GUILayout.FlexibleSpace(); //Push to the right
+                GUILayout.Label(currentSongCredits, GUI.skin.GetStyle("SoundCredits"), GUILayout.ExpandWidth(false));
+                GUILayout.EndHorizontal();
+                GUILayout.EndArea();
+            }
+        }
 	}
 
 	void ShuffleSongs() {
 		//Shuffle playlist using Fisher-Yates algorithm
-        for (int i = Global.playlist.Length; i > 1; i--)
+        for (int i = playlist.Count; i > 1; i--)
         {
 			int j = Random.Range(0,i);
-            Song tmp = Global.playlist[j];
-            Global.playlist[j] = Global.playlist[i - 1];
-            Global.playlist[i - 1] = tmp;
+            Song tmp = playlist[j];
+            playlist[j] = playlist[i - 1];
+            playlist[i - 1] = tmp;
 		}
 	}
 
@@ -121,4 +171,6 @@ public class MusicPlayer : MonoBehaviour {
 public class Song {
 	public string name;
 	public AudioClip clip;
+    public ExternalSong associated;
+    public bool enabled = true;
 }

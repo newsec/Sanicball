@@ -62,7 +62,7 @@ public class Server : MonoBehaviour {
 
 	public void RegisterServer(string status) {
 		if (isOnServerList) {
-			MasterServer.RegisterHost("sanicball",settings.gameName,status+";"+GameVersion.AsFloat+";"+GameVersion.AsString);
+			MasterServer.RegisterHost("sanicball-unofficial",settings.gameName,status+";"+GameVersion.AsFloat+";"+GameVersion.AsString);
 		}
 	}
 

@@ -1,0 +1,17 @@
+﻿Skins (with ball trails) (compress with LZ4 or something not png)
+Game Jolt avatars
+Game Jolt leaderboards
+Show time at end of game
+Server commands
+Dedicated server (maybe)
+More info about characters
+More info about servers
+More info about players
+Track list
+Bug reporting
+Screenshots
+MP3 loading with native plugin (maybe)
+More game modes
+Records
+Reworking of networking with Lidgren.Network (ugh)
+Friends system with Game Jolt (if that's possible)

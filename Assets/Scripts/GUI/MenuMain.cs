@@ -9,11 +9,16 @@ public class MenuMain : MonoBehaviour {
 	public MenuPageStartGame startGame;
 	public MenuPageJoinGame joinGame;
 	public MenuPageOptions options;
+    public MenuPageCustomization customization;
 
-	MenuPage page;
+	public MenuPage page;
+    public MenuPage lastActualPage;
 	Vector2 scrollPos;
+    Vector2 scrollPos2;
 
-	KeyCode[] validKeyCodes;
+    KeyCode[] validKeyCodes;
+
+    public float pageOffset = 0f;
 
 	void Start() {
         GameSettings.Init();
@@ -24,9 +29,17 @@ public class MenuMain : MonoBehaviour {
 	}
 
 	void Update() {
+        if(page != MenuPage.None)
+        {
+            pageOffset = Mathf.Lerp(pageOffset, 400f, Time.deltaTime * 25f);
+        }
+        else
+        {
+            pageOffset = Mathf.Lerp(pageOffset, 0f, Time.deltaTime * 25f);
+        }
 		if (Input.GetKeyDown(KeyCode.Escape)) {
 			if (string.IsNullOrEmpty(options.keybindToChange)) {
-				page = MenuPage.Main;
+				page = MenuPage.None;
 			} else {
 				options.keybindToChange = null;
 			}
@@ -41,141 +54,198 @@ public class MenuMain : MonoBehaviour {
 
 	public void SetPage(MenuPage page) {
 		this.page = page;
+        if(page != MenuPage.None)
+        {
+            lastActualPage = page;
+        }
 	}
 
-	void OnGUI() {
-		GUI.skin = skin;
-		GUIStyle smallButton = GUI.skin.GetStyle("SmallButton");
-		Rect pos = new Rect(
-			Screen.width-400,
-			0,
-			400,
-			Screen.height
-			);
+    void OnGUI()
+    {
+        GUI.depth = -100;
+        string headerText = "";
+        switch (lastActualPage)
+        {
+            case MenuPage.Credits:
+                headerText = "Game credits";
+                break;
+            case MenuPage.JoinGame:
+                headerText = "Join by IP";
+                break;
+            case MenuPage.Options:
+                headerText = "Options";
+                break;
+            case MenuPage.Customization:
+                headerText = "Customization";
+                break;
+            case MenuPage.StartGame:
+                headerText = "Start server";
+                break;
+        }
+        GUI.skin = skin;
+        GUIStyle smallButton = GUI.skin.GetStyle("SmallButton");
+        Rect pos;
+        if (pageOffset > 0.01f)
+        {
+            pos = new Rect(
+    Screen.width - 400 - pageOffset,
+    0,
+    400,
+    Screen.height
+    );
 
-		GUI.Box(pos,"");
-		GUILayout.BeginArea(pos);
-		//Game version and slogan
-		GUIStyle version = new GUIStyle(GUI.skin.label);
-		version.fontSize = 52;
-		version.fontStyle = FontStyle.Bold;
-		GUILayout.Label(GameVersion.AsString,version);
-		GUILayout.Label(GameVersion.Slogan);
-		//Page header
-		string headerText = "";
-		switch(page) {
-		case MenuPage.Credits:
-			headerText = "Game credits";
-			break;
-		case MenuPage.JoinGame:
-			headerText = "Join by IP";
-			break;
-		case MenuPage.Options:
-			headerText = "Options";
-			break;
-		case MenuPage.StartGame:
-			headerText = "Start server";
-			break;
-		}
-		GUIStyle headerStyle = new GUIStyle(GUI.skin.label);
-		headerStyle.fontSize=40;
-		headerStyle.fontStyle = FontStyle.Bold;
-		GUILayout.Label(headerText,headerStyle);
+            GUI.Box(pos, "");
+            GUILayout.BeginArea(pos);
+            GUIStyle headerStyle = new GUIStyle(GUI.skin.label);
+            headerStyle.fontSize = 52;
+            headerStyle.fontStyle = FontStyle.Bold;
+            GUILayout.Label(headerText, headerStyle);
+            GUILayout.FlexibleSpace();
+            scrollPos2 = GUILayout.BeginScrollView(scrollPos2);
+            if (lastActualPage == MenuPage.StartGame)
+            {
+                startGame.DrawGUI();
+            }
 
-		GUILayout.FlexibleSpace();
-		scrollPos = GUILayout.BeginScrollView(scrollPos);
-		if (page == MenuPage.Main) {
+            if (lastActualPage == MenuPage.JoinGame)
+            {
+                joinGame.DrawGUI();
+            }
 
-			if (GUILayout.Button("Start Race")) {
-				page = MenuPage.StartGame;
-				startGame.gameName = GameSettings.user.playerName + "'s Game";
-			}
-			if (GUILayout.Button("Join Race")) {
-				GetComponent<ServerBrowser>().Toggle();
-			}
-			if (GUILayout.Button("Options")) {
-				page = MenuPage.Options;
-			}
-			if (GUILayout.Button("Credits")) {
-				page = MenuPage.Credits;
-			}
+            if (lastActualPage == MenuPage.Options)
+            {
+                options.DrawGUI();
+            }
 
-			if (GUILayout.Button("Visit Website")) {
-				if (Application.isWebPlayer) {
-					Application.ExternalEval("window.open('http://www.sanicball.com','SANICBALL');");
-				} else {
-					Application.OpenURL("http://www.sanicball.com");
-				}
-			}
-			if (!Application.isWebPlayer) {
-				if (GUILayout.Button("Quit")) {
-					Application.Quit();
-				}
-			}
-		}
-		if (page == MenuPage.StartGame) {
-			startGame.DrawGUI();
-		}
+            if (lastActualPage == MenuPage.Customization)
+            {
+                customization.DrawGUI();
+            }
 
-		if (page == MenuPage.JoinGame) {
-			joinGame.DrawGUI();
-		}
+            if (lastActualPage == MenuPage.Credits)
+            {
+                #region Credits
+                GUIStyle titleStyle = new GUIStyle(GUI.skin.label);
+                titleStyle.fontSize = 24;
+                titleStyle.fontStyle = FontStyle.Bold;
+                GUIStyle creditsStyle = new GUIStyle(GUI.skin.label);
+                creditsStyle.fontSize = 16;
+                GUILayout.Label("Original game by BK-TN \n" +
+                                "Current version made by uhm.. github?\n" +
+                                "Contribute at: https://github.com/HannesMann/Sanicball", creditsStyle);
+                GUILayout.Label("Graphics", titleStyle);
+                GUILayout.Label("- GRASS TEXTURE: Solon001 on Deviantart\n" +
+                                "Most other textures are either made by Unity or taken from royality-free texture sites.", creditsStyle);
+                GUILayout.Label("Character faces", titleStyle);
+                GUILayout.Label("- SANIC: Popular wallpaper - unknown origin\n" +
+                                "- KNACKLES: Disappeared from internet somehow\n" +
+                                "- TAELS: Mew087123 on Deviantart\n" +
+                                "- AME ROES: o_opc on Reddit\n" +
+                                "- SHEDEW: GalaxyTheHedgehog1 on Deviantart\n" +
+                                "- ROGE DA BAT: tysonhesse on Deviantart\n" +
+                                "- ASSPIO: drawn by me\n" +
+                                "- BIG DA CAT: EdulokoX on Reddit\n" +
+                                "- DR. AGGMEN: tysonhesse on Deviantart", creditsStyle);
+                GUILayout.Label("Music", titleStyle);
+                GUILayout.Label("- MENU: Chariots Of Fire theme song\n" +
+                                "- LOBBY: Green Hill Zone from Sonic The Hedgehog" +
+                                "- INGAME PLAYLIST\n" +
+                                "- Sonic Generations - vs. Metal Sonic (Stardust Speedway Bad Future) JP [Generations Mix]\n" +
+                                "- Deadmau5 - Infra Super Turbo Pig Cart Racer\n" +
+                                "- Sonic Adventure 2 - City Escape\n" +
+                                "- Tube and Berger - Straight Ahead (Instrumental)\n" +
+                                "- Sonic R - Can you feel the Sunshine?\n" +
+                                "- Sonic X theme song (Gotta go fast)\n" +
+                                "- Sonic the Hedgehog CD - Sonic Boom\n" +
+                                "- Daytona USA - Rolling start!\n" +
+                                "- Sonic the Hedgehog CD - Intro (Toot Toot Sonic Warrior)\n" +
+                                "- Ugly Baby - Pronto\n" +
+                                "- Katamari Damacy - Main Theme"
+                                , creditsStyle);
+                #endregion
+                if (GUILayout.Button("Back", smallButton))
+                {
+                    page = MenuPage.None;
+                }
+            }
+            GUILayout.FlexibleSpace();
+            GUILayout.EndScrollView();
+            GUILayout.EndArea();
+        }
+        pos = new Rect(
+            Screen.width - 400,
+            0,
+            400,
+            Screen.height
+            );
 
-		if (page == MenuPage.Options) {
-			options.DrawGUI();
-		}
+        GUI.Box(pos, "");
+        GUILayout.BeginArea(pos);
+        //Game version and slogan
+        GUIStyle version = new GUIStyle(GUI.skin.label);
+        version.fontSize = 52;
+        version.fontStyle = FontStyle.Bold;
+        GUILayout.Label(GameVersion.AsString, version);
+        GUILayout.Label(GameVersion.Slogan);
+        //Page header
 
-		if (page == MenuPage.Credits) {
-			GUIStyle titleStyle = new GUIStyle(GUI.skin.label);
-			titleStyle.fontSize = 24;
-			titleStyle.fontStyle = FontStyle.Bold;
-			GUIStyle creditsStyle = new GUIStyle(GUI.skin.label);
-			creditsStyle.fontSize = 16;
-			GUILayout.Label("Game/Coding/Models by BK-TN (That's me)\n" +
-			                "Sanicball is built with Unity3D and coded in C#.",creditsStyle);
-			GUILayout.Label("Graphics",titleStyle);
-			GUILayout.Label("- GRASS TEXTURE: Solon001 on Deviantart\n" +
-			                "Most other textures are either made by Unity or taken from royality-free texture sites.",creditsStyle);
-			GUILayout.Label("Character faces",titleStyle);
-			GUILayout.Label("- SANIC: Popular wallpaper - unknown origin\n" +
-							"- KNACKLES: Disappeared from internet somehow\n" +
-			    			"- TAELS: Mew087123 on Deviantart\n" +
-			                "- AME ROES: o_opc on Reddit\n" +
-			                "- SHEDEW: GalaxyTheHedgehog1 on Deviantart\n" +
-			                "- ROGE DA BAT: tysonhesse on Deviantart\n" +
-			                "- ASSPIO: drawn by me\n" +
-			                "- BIG DA CAT: EdulokoX on Reddit\n" +
-			                "- DR. AGGMEN: tysonhesse on Deviantart",creditsStyle);
-			GUILayout.Label("Music",titleStyle);
-			GUILayout.Label("- MENU: Chariots Of Fire theme song\n" +
-			                "- LOBBY: Green Hill Zone from Sonic The Hedgehog" +
-			                "- INGAME PLAYLIST\n" +
-			                "- Sonic Generations - vs. Metal Sonic (Stardust Speedway Bad Future) JP [Generations Mix]\n" +
-			                "- Deadmau5 - Infra Super Turbo Pig Cart Racer\n" +
-			                "- Sonic Adventure 2 - City Escape\n" +
-			                "- Tube and Berger - Straight Ahead (Instrumental)\n" +
-			                "- Sonic R - Can you feel the Sunshine?\n" +
-			                "- Sonic X theme song (Gotta go fast)\n" +
-			                "- Sonic the Hedgehog CD - Sonic Boom\n" +
-			                "- Daytona USA - Rolling start!\n" +
-			                "- Sonic the Hedgehog CD - Intro (Toot Toot Sonic Warrior)\n" +
-			                "- Ugly Baby - Pronto\n" +
-			                "- Katamari Damacy - Main Theme"
-			                ,creditsStyle);
-			if (GUILayout.Button("Back",smallButton)) {
-				page = MenuPage.Main;
-			}
-		}
-		GUILayout.EndScrollView();
-		GUILayout.FlexibleSpace();
+        GUILayout.FlexibleSpace();
+        scrollPos = GUILayout.BeginScrollView(scrollPos);
+        if (GUILayout.Button("Start Race"))
+        {
+            page = MenuPage.StartGame;
+            lastActualPage = MenuPage.StartGame;
+            startGame.gameName = GameSettings.user.playerName + "'s Game";
+        }
+        if (GUILayout.Button("Join Race"))
+        {
+            GetComponent<ServerBrowser>().Toggle();
+        }
+        if (GUILayout.Button("Options"))
+        {
+            page = MenuPage.Options;
+            lastActualPage = MenuPage.Options;
+        }
+        if (GUILayout.Button("Customization"))
+        {
+            page = MenuPage.Customization;
+            lastActualPage = MenuPage.Customization;
+        }
+        if (GUILayout.Button("Credits"))
+        {
+            page = MenuPage.Credits;
+            lastActualPage = MenuPage.Credits;
+        }
 
-		GUIStyle style = new GUIStyle(GUI.skin.label);
-		style.fontSize = 12;
-		int currentYear = Mathf.Max(DateTime.Today.Year,2014);
-		GUILayout.Label("Sanicball is a game by BK-TN and is not related to Sega or Sonic Team in any way. © "+currentYear+" a few rights reserved",style);
+        if (GUILayout.Button("Visit Website"))
+        {
+            if (Application.isWebPlayer)
+            {
+                Application.ExternalEval("window.open('http://www.sanicball.com','SANICBALL');");
+            }
+            else
+            {
+                Application.OpenURL("http://www.sanicball.com");
+            }
+        }
+        if (!Application.isWebPlayer)
+        {
+            if (GUILayout.Button("Quit"))
+            {
+                Application.Quit();
+            }
+        }
 
-		GUILayout.EndArea();
-	}
+        GUILayout.EndScrollView();
+        GUILayout.FlexibleSpace();
+
+        GUIStyle style = new GUIStyle(GUI.skin.label);
+        style.fontSize = 12;
+        int currentYear = Mathf.Max(DateTime.Today.Year, 2014);
+        GUILayout.Label("Sanicball is a game by BK-TN and is not related to Sega or Sonic Team in any way. © " + currentYear + " a few rights reserved", style);
+
+        GUILayout.EndArea();
+    }
 
 	void GetAnyKeyForKeybinding() {
 		foreach (KeyCode kc in validKeyCodes) {
@@ -192,7 +262,7 @@ public class MenuMain : MonoBehaviour {
 }
 
 public enum MenuPage {
-	Main, StartGame, JoinGame, Options, Credits
+	None, StartGame, JoinGame, Options, Customization, Credits
 }
 
 [System.Serializable]
@@ -226,7 +296,7 @@ public class MenuPageStartGame {
 			StartServer();
 		}
 		if (GUILayout.Button("Back",GUI.skin.GetStyle ("smallButton"))) {
-			menu.SetPage(MenuPage.Main);
+			menu.SetPage(MenuPage.None);
 		}
 		//GUIStyle thingStyle = new GUIStyle(GUI.skin.label);
 		//thingStyle.fontSize = 18;
@@ -284,13 +354,16 @@ public class MenuPageJoinGame {
 		ip = GUILayout.TextField(ip);
 		GUILayout.Label("Port (Default 25000)");
 		port = GUILayout.TextField(port);
-        if (connectionStatus.message.StartsWith("@spinner/"))
+        if (connectionStatus != null && connectionStatus.message != null)
         {
-            Spinner.Draw(connectionStatus.message.Replace("@spinner/", ""));
-        }
-        else
-        {
-            GUILayout.Label(connectionStatus.message);
+            if (connectionStatus.message.StartsWith("@spinner/"))
+            {
+                Spinner.Draw(connectionStatus.message.Replace("@spinner/", ""));
+            }
+            else
+            {
+                GUILayout.Label(connectionStatus.message);
+            }
         }
 		if (!connectionStatus.isConnecting) {
 			if (GUILayout.Button ("Connect") || (Event.current.isKey && Event.current.keyCode == KeyCode.Return)) {
@@ -303,7 +376,7 @@ public class MenuPageJoinGame {
 		}
 		
 		if (GUILayout.Button ("Back",GUI.skin.GetStyle("smallButton"))) {
-			menu.SetPage(MenuPage.Main);
+			menu.SetPage(MenuPage.None);
 		}
 	}
 	
@@ -367,7 +440,7 @@ public class MenuPageOptions {
 			if (GUILayout.Button("Profile"))
 				page = 3;
 			if (GUILayout.Button("Back",smallButton))
-				menu.SetPage(MenuPage.Main);
+				menu.SetPage(MenuPage.None);
 		}
 
 		if (page == 1) { //General settings
@@ -547,10 +620,117 @@ public class MenuPageOptions {
 		GameSettings.fullscreen = fullscreen;
 		GameSettings.vsync = vsync;
 		GameSettings.shadows = shadows;
-		//Camera.main.fieldOfView = fov;
+		//Camera.None.fieldOfView = fov;
 		//////mouse speed goes here
 		GameSettings.aa = aa;
 		GameSettings.Apply(true);
 		GameSettings.Save();
 	}
+}
+
+[System.Serializable]
+public class MenuPageCustomization
+{
+    public MenuMain menu;
+
+    int page = 0;
+
+    private Vector2 scroll;
+
+    public void DrawGUI()
+    {
+        GUIStyle smallButton = GUI.skin.GetStyle("smallButton");
+
+        if (page == 0)
+        {
+            if (GUILayout.Button("Music"))
+                page = 1;
+            if (GUILayout.Button("Back", smallButton))
+                menu.SetPage(MenuPage.None);
+        }
+
+        if (page == 1)
+        {
+            // music
+            GUILayout.Space(10);
+            scroll = GUILayout.BeginScrollView(scroll);
+            GUIStyle style = new GUIStyle(GUI.skin.GetStyle("SmallButtonOdd")) { fontSize = 14, alignment = TextAnchor.MiddleRight };
+            GUIStyle styleText = new GUIStyle(GUI.skin.GetStyle("LabelOdd")) { wordWrap = true, fontSize = 14, alignment = TextAnchor.MiddleLeft };
+            if (GameSettings.userPlaylist.Count > 0)
+            {
+                GUILayout.Label("My music", new GUIStyle(GUI.skin.label) { wordWrap = true, fontSize = 18 });
+                foreach (ExternalSong s in GameSettings.userPlaylist.ToArray())
+                {
+                    GUILayout.Space(1);
+                    GUILayout.BeginHorizontal();
+                    GUILayout.Label(s.song.name, styleText);
+                    if (GUILayout.Button("Remove", style, GUILayout.MaxWidth(style.CalcSize(new GUIContent("Remove")).x), GUILayout.ExpandHeight(true)))
+                    {
+                        s.Dispose();
+                        GameSettings.userPlaylist.Remove(s);
+                    }
+                    GUILayout.EndHorizontal();
+                    GUILayout.Space(1);
+                }
+                GUILayout.Space(10);
+            }
+            GUILayout.Label("Inbuilt music", new GUIStyle(GUI.skin.label) { wordWrap = true, fontSize = 18 });
+            foreach (Song s in Global.playlist)
+            {
+                GUILayout.Space(1);
+                GUILayout.BeginHorizontal();
+                style = new GUIStyle(GUI.skin.GetStyle(s.enabled ? "SmallButtonOdd" : "SmallButtonDisabled")) { fontSize = 14, alignment = TextAnchor.MiddleRight };
+                styleText = new GUIStyle(GUI.skin.GetStyle(s.enabled ? "LabelOdd" : "LabelDisabled")) { wordWrap = true, fontSize = 14, alignment = TextAnchor.MiddleLeft };
+                GUILayout.Label(s.name, styleText);
+                if (s.enabled)
+                {
+                    if (GUILayout.Button("Disable", style, GUILayout.MaxWidth(style.CalcSize(new GUIContent("Disable")).x), GUILayout.ExpandHeight(true)))
+                    {
+                        s.enabled = false;
+                    }
+                }
+                else
+                {
+                    if (GUILayout.Button("Enable", style, GUILayout.MaxWidth(style.CalcSize(new GUIContent("Disable")).x), GUILayout.ExpandHeight(true)))
+                    {
+                        s.enabled = true;
+                    }
+                }
+                GUILayout.EndHorizontal();
+                GUILayout.Space(1);
+            }
+            GUILayout.EndScrollView();
+            GUILayout.Space(10);
+            if (GUILayout.Button("Add", smallButton))
+            {
+                menu.StartCoroutine(AddMusic());
+            }
+            if (GUILayout.Button("Back", smallButton))
+            {
+                page = 0;
+                GameSettings.Save();
+            }
+        }
+    }
+
+    private IEnumerator AddMusic()
+    {
+        if (Screen.fullScreen)
+        {
+            Screen.SetResolution(Screen.width, Screen.height, false);
+            yield return new WaitForSeconds(0.5f);
+        }
+        System.Windows.Forms.OpenFileDialog openFileDialog = new System.Windows.Forms.OpenFileDialog();
+        openFileDialog.Filter = "Sound Files (*.mp3, *.ogg)|*.mp3;*.ogg|All Files (*.*)|*.*";
+        openFileDialog.Multiselect = true;
+        if (openFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+        {
+            foreach (string s in openFileDialog.FileNames)
+            {
+                GameSettings.userPlaylist.Add(new ExternalSong(s));
+            }
+        }
+        Screen.SetResolution(Screen.width, Screen.height, GameSettings.fullscreen);
+        yield return null;
+    }
 }
